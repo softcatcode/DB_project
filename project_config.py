@@ -1,21 +1,17 @@
-# Загрузка настроек проекта (в данном случае только настроек соединения с БД)
-# из файла config.yaml.
+"""Загрузка настроек из config.yaml."""
+
 import yaml
+from pathlib import Path
+
 
 class ProjectConfig:
-    """Класс считывает базовые настройки из файла config.yaml"""
-
     def __init__(self):
-        with open('config.yaml') as f:
-            config = yaml.safe_load(f)
-            self.dbname = config['dbname']
-            self.user = config['user']
-            self.password = config['password']
-            self.host = config['host']
-            self.dbtableprefix = config['dbtableprefix']
+        config_path = Path(__file__).resolve().with_name("config.yaml")
+        with config_path.open(encoding="utf-8") as file:
+            config = yaml.safe_load(file) or {}
 
-# Этот метод запускается только, если запускать
-# данный файл, а не подключать его.
-if __name__ == "__main__":
-    x = ProjectConfig()
-    print(x.dbfilepath)
+        self.dbname = config["dbname"]
+        self.user = config["user"]
+        self.password = config["password"]
+        self.host = config["host"]
+        self.dbtableprefix = config.get("dbtableprefix", "public.")
